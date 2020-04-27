@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OhdDoorFinal</RootNamespace>
     <AssemblyName>OhdDoorFinal</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,44 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcCoreMgd">
-      <HintPath>..\..\AutoCADHelp\packages\AutoCAD-2017.Net.Base.1.0.0\lib\net46\AcCoreMgd.dll</HintPath>
+    <Reference Include="accoremgd">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\accoremgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="AcCui">
-      <HintPath>..\..\AutoCADHelp\packages\AutoCAD-2017.Net.Base.1.0.0\lib\net46\AcCui.dll</HintPath>
+    <Reference Include="acdbmgd">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\acdbmgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="AcDbMgd">
-      <HintPath>..\..\AutoCADHelp\packages\AutoCAD-2017.Net.Base.1.0.0\lib\net46\AcDbMgd.dll</HintPath>
-    </Reference>
-    <Reference Include="AcMgd">
-      <HintPath>..\..\AutoCADHelp\packages\AutoCAD-2017.Net.Base.1.0.0\lib\net46\AcMgd.dll</HintPath>
-    </Reference>
-    <Reference Include="AecCoreMgd">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\AecCoreMgd.dll</HintPath>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.ArchBase">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.ArchBase.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.Base">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.Base.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.Details">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.Details.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.Schedule">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.Schedule.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.UIArchBase">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.UIArchBase.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Autodesk.AEC.Interop.UIBase">
-      <HintPath>F:\Personal\Development\AutoCAD\marianovel\Architecture Development dll\Autodesk.AEC.Interop.UIBase.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+    <Reference Include="acmgd">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\acmgd.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -76,6 +50,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -84,8 +60,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllBlocks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AllBlocks.Designer.cs">
+      <DependentUpon>AllBlocks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Commands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AllBlocks.resx">
+      <DependentUpon>AllBlocks.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
