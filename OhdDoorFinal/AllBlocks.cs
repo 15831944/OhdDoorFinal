@@ -94,5 +94,13 @@ namespace OhdDoorFinal
             Close();
             Dispose();
         }
+
+        private void BtnWindow_Click(object sender, EventArgs e)
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            doc.SendStringToExecute("OWindow ", false, false, false);
+            Close();
+            Dispose();
+        }
     }
 }

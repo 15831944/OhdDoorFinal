@@ -33,15 +33,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\accoremgd.dll</HintPath>
+      <HintPath>F:\Personal\Development\AutoCAD\Chris\Development dll\accoremgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\acdbmgd.dll</HintPath>
+      <HintPath>F:\Personal\Development\AutoCAD\Chris\Development dll\acdbmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2018\acmgd.dll</HintPath>
+      <HintPath>F:\Personal\Development\AutoCAD\Chris\Development dll\acmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

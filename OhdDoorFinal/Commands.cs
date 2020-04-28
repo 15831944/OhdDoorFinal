@@ -20,7 +20,7 @@ namespace OhdDoorFinal
         direction direction;
 
         //Master command
-        [CommandMethod("OHD",CommandFlags.Transparent)]
+        [CommandMethod("OO",CommandFlags.Transparent)]
         public void masterOHD()
         {
             AllBlocks allBlocks = new AllBlocks(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
@@ -44,7 +44,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertSliderBlock(insertionPoint, "slider4",Convert.ToDouble(trimWidth));
+            InsertSliderBlock(insertionPoint, "slider4",Convert.ToDouble(trimWidth/2));
         }
 
         [CommandMethod("OPKD")]
@@ -53,7 +53,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "pocket door", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "pocket door", Convert.ToDouble(trimWidth/2)); //Need to be updated
         }
 
         //garage door
@@ -73,7 +73,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "fold", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "fold", Convert.ToDouble(trimWidth)*0.67); //Need to be updated
         }
 
         //Double Bi-fold
@@ -86,7 +86,16 @@ namespace OhdDoorFinal
             InsertGenDoorBlock(insertionPoint, "Double Bi-fold", Convert.ToDouble(trimWidth)); //Need to be updated
         }
 
+        //Double Window
+        [CommandMethod("OWindow")]
+        public void window() //For pocket door need special consideration during insertion
+        {
+            OHDBlank();
 
+            Point3d insertionPoint = GetPoint("Select window block insertion point");
+            InsertGenDoorBlock(insertionPoint, "OHD Window"); //Need to be updated
+        }
+         
 
         [CommandMethod("OBLNK")]
         public void OHDBlank()

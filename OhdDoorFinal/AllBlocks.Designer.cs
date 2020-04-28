@@ -87,6 +87,7 @@
             this.btnWindow.TabIndex = 7;
             this.btnWindow.Text = "Window";
             this.btnWindow.UseVisualStyleBackColor = true;
+            this.btnWindow.Click += new System.EventHandler(this.BtnWindow_Click);
             // 
             // btnBiFldDoor
             // 
