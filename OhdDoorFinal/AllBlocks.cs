@@ -94,29 +94,5 @@ namespace OhdDoorFinal
             Close();
             Dispose();
         }
-
-        private void BtnWindow_Click(object sender, EventArgs e)
-        {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            doc.SendStringToExecute("OWindow ", false, false, false);
-            Close();
-            Dispose();
-        }
-
-        private void btnSwing_Click(object sender, EventArgs e)
-        {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            doc.SendStringToExecute("OSWG ", false, false, false);
-            Close();
-            Dispose();
-        }
-
-        private void btnDoubleSwing_Click(object sender, EventArgs e)
-        {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            doc.SendStringToExecute("ODSWG ", false, false, false);
-            Close();
-            Dispose();
-        }
     }
 }
