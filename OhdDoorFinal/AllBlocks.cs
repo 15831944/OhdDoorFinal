@@ -102,5 +102,21 @@ namespace OhdDoorFinal
             Close();
             Dispose();
         }
+
+        private void btnSwing_Click(object sender, EventArgs e)
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            doc.SendStringToExecute("OSwing ", false, false, false);
+            Close();
+            Dispose();
+        }
+
+        private void btnDoubleSwing_Click(object sender, EventArgs e)
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            doc.SendStringToExecute("ODSwing ", false, false, false);
+            Close();
+            Dispose();
+        }
     }
 }
