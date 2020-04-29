@@ -37,6 +37,8 @@
             this.btnBiFldDoor = new System.Windows.Forms.Button();
             this.btnFldDoor = new System.Windows.Forms.Button();
             this.btnGarageDoor = new System.Windows.Forms.Button();
+            this.btnDoubleSwing = new System.Windows.Forms.Button();
+            this.btnSwing = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnBlank
@@ -81,12 +83,13 @@
             // 
             // btnWindow
             // 
-            this.btnWindow.Location = new System.Drawing.Point(0, 215);
+            this.btnWindow.Location = new System.Drawing.Point(0, 273);
             this.btnWindow.Name = "btnWindow";
             this.btnWindow.Size = new System.Drawing.Size(255, 23);
             this.btnWindow.TabIndex = 7;
             this.btnWindow.Text = "Window";
             this.btnWindow.UseVisualStyleBackColor = true;
+            this.btnWindow.Click += new System.EventHandler(this.BtnWindow_Click);
             // 
             // btnBiFldDoor
             // 
@@ -118,11 +121,33 @@
             this.btnGarageDoor.UseVisualStyleBackColor = true;
             this.btnGarageDoor.Click += new System.EventHandler(this.BtnGarageDoor_Click);
             // 
+            // btnDoubleSwing
+            // 
+            this.btnDoubleSwing.Location = new System.Drawing.Point(0, 244);
+            this.btnDoubleSwing.Name = "btnDoubleSwing";
+            this.btnDoubleSwing.Size = new System.Drawing.Size(255, 23);
+            this.btnDoubleSwing.TabIndex = 9;
+            this.btnDoubleSwing.Text = "Double Swing Door";
+            this.btnDoubleSwing.UseVisualStyleBackColor = true;
+            this.btnDoubleSwing.Click += new System.EventHandler(this.btnDoubleSwing_Click);
+            // 
+            // btnSwing
+            // 
+            this.btnSwing.Location = new System.Drawing.Point(0, 215);
+            this.btnSwing.Name = "btnSwing";
+            this.btnSwing.Size = new System.Drawing.Size(255, 23);
+            this.btnSwing.TabIndex = 8;
+            this.btnSwing.Text = "Swing Door";
+            this.btnSwing.UseVisualStyleBackColor = true;
+            this.btnSwing.Click += new System.EventHandler(this.btnSwing_Click);
+            // 
             // AllBlocks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(259, 244);
+            this.ClientSize = new System.Drawing.Size(259, 303);
+            this.Controls.Add(this.btnDoubleSwing);
+            this.Controls.Add(this.btnSwing);
             this.Controls.Add(this.btnWindow);
             this.Controls.Add(this.btnBiFldDoor);
             this.Controls.Add(this.btnFldDoor);
@@ -151,5 +176,7 @@
         private System.Windows.Forms.Button btnBiFldDoor;
         private System.Windows.Forms.Button btnFldDoor;
         private System.Windows.Forms.Button btnGarageDoor;
+        private System.Windows.Forms.Button btnDoubleSwing;
+        private System.Windows.Forms.Button btnSwing;
     }
 }

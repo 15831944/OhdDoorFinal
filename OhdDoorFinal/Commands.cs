@@ -20,7 +20,7 @@ namespace OhdDoorFinal
         direction direction;
 
         //Master command
-        [CommandMethod("OHD",CommandFlags.Transparent)]
+        [CommandMethod("OO",CommandFlags.Transparent)]
         public void masterOHD()
         {
             AllBlocks allBlocks = new AllBlocks(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
@@ -34,7 +34,7 @@ namespace OhdDoorFinal
             OHDBlank();
            
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "door2", Convert.ToDouble(trimWidth));
+            InsertGenDoorBlock(insertionPoint, "mod_door", Convert.ToDouble(trimWidth));
                        
         }
 
@@ -44,7 +44,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertSliderBlock(insertionPoint, "slider4",Convert.ToDouble(trimWidth));
+            InsertSliderBlock(insertionPoint, "mod_slider4", Convert.ToDouble(trimWidth/2));
         }
 
         [CommandMethod("OPKD")]
@@ -53,7 +53,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "pocket door", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "mod_pocketDoor", Convert.ToDouble(trimWidth/2)); //Need to be updated
         }
 
         //garage door
@@ -63,7 +63,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "garage door", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "mod_garageDoor", Convert.ToDouble(trimWidth)); //Need to be updated
         }
 
         //fold
@@ -73,7 +73,7 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "fold", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "mod_fold", Convert.ToDouble(trimWidth)*0.67); //Need to be updated
         }
 
         //Double Bi-fold
@@ -83,10 +83,41 @@ namespace OhdDoorFinal
             OHDBlank();
 
             Point3d insertionPoint = GetPoint("Select door block insertion point");
-            InsertGenDoorBlock(insertionPoint, "Double Bi-fold", Convert.ToDouble(trimWidth)); //Need to be updated
+            InsertGenDoorBlock(insertionPoint, "mod_doubleBi-Fold", Convert.ToDouble(trimWidth)); //Need to be updated
+        }
+
+        //Swing
+        [CommandMethod("OSWG")]
+        public void swingDoor() //For pocket door need special consideration during insertion
+        {
+            OHDBlank();
+
+            Point3d insertionPoint = GetPoint("Select door block insertion point");
+            InsertGenDoorBlock(insertionPoint, "mod_swing", Convert.ToDouble(trimWidth)); //Need to be updated
+        }
+
+        //Double Swing
+        [CommandMethod("ODSWG")]
+        public void doubleSwingDoor() //For pocket door need special consideration during insertion
+        {
+            OHDBlank();
+
+            Point3d insertionPoint = GetPoint("Select door block insertion point");
+            InsertGenDoorBlock(insertionPoint, "mod_DoubleSwing", Convert.ToDouble(trimWidth)); //Need to be updated
         }
 
 
+
+        //Double Window
+        [CommandMethod("OWindow")]
+        public void window() //For pocket door need special consideration during insertion
+        {
+            OHDBlank();
+
+            Point3d insertionPoint = GetPoint("Select window block insertion point");
+            InsertGenDoorBlock(insertionPoint, "mod_Window"); //Need to be updated
+        }
+         
 
         [CommandMethod("OBLNK")]
         public void OHDBlank()
