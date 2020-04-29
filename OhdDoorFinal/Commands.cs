@@ -18,7 +18,7 @@ namespace OhdDoorFinal
         Point3d flaPoint;
         decimal trimWidth=0;
         direction direction;
-
+        
         //Master command
         [CommandMethod("OO",CommandFlags.Transparent)]
         public void masterOHD()
@@ -120,217 +120,222 @@ namespace OhdDoorFinal
         [CommandMethod("OBLNK")]
         public void OHDBlank()
         {
-            // Get the current document and database
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-            Database acCurDb = acDoc.Database;
-            pointOptions = new PromptPointOptions("");
-            flaPoint = new Point3d(flagPoint);
-            //Getting lower corner point
-            Point3d gtPoint = GetPoint("Please select the inside corner point :");
-            if (gtPoint == flaPoint) return;
-            Point3d cornerPointInRev = gtPoint;
-
-            //Getting upper corner point 
-            gtPoint = GetPoint("Please select the any point on outside line :");
-            if (gtPoint == flaPoint) return;
-            Point3d cornerPointOutRev = gtPoint;
-
-            PromptStringOptions stringPrompt = new PromptStringOptions("\nEnter the start distance from inside corner :");
-            stringPrompt.AllowSpaces = false;
-
-            //start distance
-            PromptResult distanceString = ed.GetString(stringPrompt);
-            if (distanceString.Status != PromptStatus.OK && decimal.TryParse(distanceString.StringResult, out _)) return;
-            decimal startDistance;
-            decimal.TryParse(distanceString.StringResult, out startDistance);
-
-            //door width
-            stringPrompt.Message = "\nEnter the trimming width :";
-            distanceString = ed.GetString(stringPrompt);
-            if (distanceString.Status != PromptStatus.OK && decimal.TryParse(distanceString.StringResult, out _)) return;
-            
-            decimal.TryParse(distanceString.StringResult, out trimWidth);
-
-            //Getting direction
-            gtPoint = GetPoint("Select the direction ");
-            if (gtPoint == flaPoint) return;
-            Point3d directionPoint = gtPoint;
-            direction = GetDirection(cornerPointInRev, directionPoint);
-            //Wall offset calc
-            double wallOffset = Math.Abs(cornerPointOutRev.Y - cornerPointInRev.Y);
-            ed.WriteMessage("\noffset distance :" + wallOffset);
-
-
-            //Getting wall lines
-            Line outsideLine = new Line();
-            Line insideLine = new Line();
-
-
-            using (Transaction tr = acCurDb.TransactionManager.StartTransaction())
+            try
             {
-                // Open the Block table for read
-                BlockTable acBlkTbl;
-                acBlkTbl = tr.GetObject(acCurDb.BlockTableId,
-                OpenMode.ForRead) as BlockTable;
-                // Open the Block table record Model space for write
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec = tr.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                OpenMode.ForWrite) as BlockTableRecord;
+                // Get the current document and database
+                Document acDoc = Application.DocumentManager.MdiActiveDocument;
+                Database acCurDb = acDoc.Database;
+                pointOptions = new PromptPointOptions("");
+                flaPoint = new Point3d(flagPoint);
+                //Getting lower corner point
+                Point3d gtPoint = GetPoint("Please select the inside corner point :");
+                if (gtPoint == flaPoint) return;
+                Point3d cornerPointInRev = gtPoint;
 
-                // Request for objects to be selected in the drawing area
-                PromptSelectionOptions promptSelectionOptions = new PromptSelectionOptions();
-                promptSelectionOptions.MessageForAdding = "\nSelect Outside && inside line and press enter";
-                PromptSelectionResult SSPrompt = acDoc.Editor.GetSelection(promptSelectionOptions);
+                //Getting upper corner point 
+                gtPoint = GetPoint("Please select the any point on outside line :");
+                if (gtPoint == flaPoint) return;
+                Point3d cornerPointOutRev = gtPoint;
 
-                //SelectionSet selectionSet = SSPrompt.Value;
-                //Line outsideLine = new Line();
-                //Line insideLine = new Line();
-                if (SSPrompt.Status == PromptStatus.OK && SSPrompt.Value.Count == 2)
+                PromptStringOptions stringPrompt = new PromptStringOptions("\nEnter the start distance from inside corner :");
+                stringPrompt.AllowSpaces = false;
+
+                //start distance
+                PromptResult distanceString = ed.GetString(stringPrompt);
+                if (distanceString.Status != PromptStatus.OK && decimal.TryParse(distanceString.StringResult, out _)) return;
+                decimal startDistance;
+                decimal.TryParse(distanceString.StringResult, out startDistance);
+
+                //door width
+                stringPrompt.Message = "\nEnter the trimming width :";
+                distanceString = ed.GetString(stringPrompt);
+                if (distanceString.Status != PromptStatus.OK && decimal.TryParse(distanceString.StringResult, out _)) return;
+
+                decimal.TryParse(distanceString.StringResult, out trimWidth);
+
+                //Getting direction
+                gtPoint = GetPoint("Select the direction ");
+                if (gtPoint == flaPoint) return;
+                Point3d directionPoint = gtPoint;
+                direction = GetDirection(cornerPointInRev, directionPoint);
+                //Wall offset calc
+                double wallOffset = Math.Abs(cornerPointOutRev.Y - cornerPointInRev.Y);
+                ed.WriteMessage("\noffset distance :" + wallOffset);
+
+
+                //Getting wall lines
+                Line outsideLine = new Line();
+                Line insideLine = new Line();
+
+
+                using (Transaction tr = acCurDb.TransactionManager.StartTransaction())
                 {
-                    foreach (ObjectId id in SSPrompt.Value.GetObjectIds())
-                    {
-                        if (id.ObjectClass.DxfName == "LINE")
-                        {
-                            Line tempL = tr.GetObject(id, OpenMode.ForWrite) as Line;
-                            if (IsPointOnPolyline(ConvertToPolyline(tempL), cornerPointInRev))
-                            {
-                                insideLine = tr.GetObject(id, OpenMode.ForWrite) as Line;
-                            }
-                            else if (IsPointOnPolyline(ConvertToPolyline(tempL), cornerPointOutRev))
-                            {
-                                outsideLine = tr.GetObject(id, OpenMode.ForWrite) as Line;
-                            }
+                    // Open the Block table for read
+                    BlockTable acBlkTbl;
+                    acBlkTbl = tr.GetObject(acCurDb.BlockTableId,
+                    OpenMode.ForRead) as BlockTable;
+                    // Open the Block table record Model space for write
+                    BlockTableRecord acBlkTblRec;
+                    acBlkTblRec = tr.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                    OpenMode.ForWrite) as BlockTableRecord;
 
+                    // Request for objects to be selected in the drawing area
+                    PromptSelectionOptions promptSelectionOptions = new PromptSelectionOptions();
+                    promptSelectionOptions.MessageForAdding = "\nSelect Outside && inside line and press enter";
+                    PromptSelectionResult SSPrompt = acDoc.Editor.GetSelection(promptSelectionOptions);
+
+                    //SelectionSet selectionSet = SSPrompt.Value;
+                    //Line outsideLine = new Line();
+                    //Line insideLine = new Line();
+                    if (SSPrompt.Status == PromptStatus.OK && SSPrompt.Value.Count == 2)
+                    {
+                        foreach (ObjectId id in SSPrompt.Value.GetObjectIds())
+                        {
+                            if (id.ObjectClass.DxfName == "LINE")
+                            {
+                                Line tempL = tr.GetObject(id, OpenMode.ForWrite) as Line;
+                                if (IsPointOnPolyline(ConvertToPolyline(tempL), cornerPointInRev))
+                                {
+                                    insideLine = tr.GetObject(id, OpenMode.ForWrite) as Line;
+                                }
+                                else if (IsPointOnPolyline(ConvertToPolyline(tempL), cornerPointOutRev))
+                                {
+                                    outsideLine = tr.GetObject(id, OpenMode.ForWrite) as Line;
+                                }
+
+                            }
                         }
                     }
+                    else
+                    {
+                        ed.WriteMessage("\nCancelled or selected more than two line");
+                        return;
+                    }
+
+
+                    //Trim operation
+                    Point3d lineStartPoint = insideLine.StartPoint;
+                    Point3d lineEndPoint = insideLine.EndPoint;
+                    Polyline polyl = ConvertToPolyline(outsideLine);
+
+                    //Calculate trimming points 
+                    Point3d inTrimStart = new Point3d(), inTrimEnd = new Point3d(), outTrimStart = new Point3d(), outTrimEnd = new Point3d();
+                    switch (direction)
+                    {
+                        case direction.right:
+                            inTrimStart = new Point3d(cornerPointInRev.X + Convert.ToDouble(startDistance), cornerPointInRev.Y, 0);
+                            inTrimEnd = new Point3d(inTrimStart.X + Convert.ToDouble(trimWidth), cornerPointInRev.Y, 0);
+                            outTrimStart = new Point3d(inTrimStart.X, cornerPointOutRev.Y, 0);
+                            outTrimEnd = new Point3d(inTrimEnd.X, cornerPointOutRev.Y, 0);
+                            break;
+                        case direction.left:
+                            inTrimStart = new Point3d(cornerPointInRev.X - Convert.ToDouble(startDistance), cornerPointInRev.Y, 0);
+                            inTrimEnd = new Point3d(inTrimStart.X - Convert.ToDouble(trimWidth), cornerPointInRev.Y, 0);
+                            outTrimStart = new Point3d(inTrimStart.X, cornerPointOutRev.Y, 0);
+                            outTrimEnd = new Point3d(inTrimEnd.X, cornerPointOutRev.Y, 0);
+                            break;
+                        case direction.top:
+                            inTrimStart = new Point3d(cornerPointInRev.X, cornerPointInRev.Y + Convert.ToDouble(startDistance), 0);
+                            inTrimEnd = new Point3d(cornerPointInRev.X, inTrimStart.Y + Convert.ToDouble(trimWidth), 0);
+                            outTrimStart = new Point3d(cornerPointOutRev.X, inTrimStart.Y, 0);
+                            outTrimEnd = new Point3d(cornerPointOutRev.X, inTrimEnd.Y, 0);
+                            break;
+                        case direction.bottom:
+                            inTrimStart = new Point3d(cornerPointInRev.X, cornerPointInRev.Y - Convert.ToDouble(startDistance), 0);
+                            inTrimEnd = new Point3d(cornerPointInRev.X, inTrimStart.Y - Convert.ToDouble(trimWidth), 0);
+                            outTrimStart = new Point3d(cornerPointOutRev.X, inTrimStart.Y, 0);
+                            outTrimEnd = new Point3d(cornerPointOutRev.X, inTrimEnd.Y, 0);
+                            break;
+                    }
+
+
+                    Line tempLine = new Line(lineStartPoint, inTrimStart);
+                    if (IsPointOnPolyline(ConvertToPolyline(tempLine), inTrimEnd))
+                    {
+                        Point3d tempPoint = lineStartPoint;
+                        lineStartPoint = lineEndPoint;
+                        lineEndPoint = tempPoint;
+                    }
+
+
+                    Line line1 = new Line(lineStartPoint, inTrimStart);
+                    Line line2 = new Line(inTrimEnd, lineEndPoint);
+
+                    line1.SetDatabaseDefaults();
+                    line2.SetDatabaseDefaults();
+                    polyl.SetDatabaseDefaults();
+
+                    acBlkTblRec.AppendEntity(line1);
+                    acBlkTblRec.AppendEntity(line2);
+                    acBlkTblRec.AppendEntity(polyl);
+
+                    tr.AddNewlyCreatedDBObject(line1, true);
+                    tr.AddNewlyCreatedDBObject(line2, true);
+                    tr.AddNewlyCreatedDBObject(polyl, true);
+
+                    //Upperline trim
+
+                    lineStartPoint = outsideLine.StartPoint;
+                    lineEndPoint = outsideLine.EndPoint;
+                    Polyline polyl2 = ConvertToPolyline(outsideLine);
+                    //Need to check trimStartPoint and trimEndPoint lies into the line or not
+                    if (!(IsPointOnPolyline(polyl2, outTrimStart) && IsPointOnPolyline(polyl2, outTrimEnd)))
+                    {
+                        ed.WriteMessage("\nTrim startpoint and endpoint are not on the line to trim");
+                        return;
+                    }
+
+                    tempLine = new Line(lineStartPoint, outTrimStart);
+                    if (IsPointOnPolyline(ConvertToPolyline(tempLine), outTrimEnd))
+                    {
+                        Point3d tempPoint = lineStartPoint;
+                        lineStartPoint = lineEndPoint;
+                        lineEndPoint = tempPoint;
+                    }
+
+
+                    Line line3 = new Line(lineStartPoint, outTrimStart);
+                    Line line4 = new Line(outTrimEnd, lineEndPoint);
+
+                    line3.SetDatabaseDefaults();
+                    line4.SetDatabaseDefaults();
+                    polyl.SetDatabaseDefaults();
+                    polyl2.SetDatabaseDefaults();
+
+                    acBlkTblRec.AppendEntity(line3);
+                    acBlkTblRec.AppendEntity(line4);
+                    acBlkTblRec.AppendEntity(polyl2);
+
+                    tr.AddNewlyCreatedDBObject(line3, true);
+                    tr.AddNewlyCreatedDBObject(line4, true);
+                    tr.AddNewlyCreatedDBObject(polyl2, true);
+
+                    //Delete the base line to complete trimming operation
+                    polyl.Erase();
+                    polyl2.Erase();
+                    outsideLine.Erase();
+                    insideLine.Erase();
+
+                    //Add two more line connecting four trimming points
+                    Line startTrimConnection = new Line(inTrimStart, outTrimStart);
+                    Line endTrimConnection = new Line(inTrimEnd, outTrimEnd);
+                    startTrimConnection.SetDatabaseDefaults();
+                    endTrimConnection.SetDatabaseDefaults();
+                    acBlkTblRec.AppendEntity(startTrimConnection);
+                    acBlkTblRec.AppendEntity(endTrimConnection);
+                    tr.AddNewlyCreatedDBObject(startTrimConnection, true);
+                    tr.AddNewlyCreatedDBObject(endTrimConnection, true);
+
+
+                    ed.Regen();
+                    tr.Commit();
+                    ed.Regen();
+
                 }
-                else
-                {
-                    ed.WriteMessage("\nCancelled or selected more than two line");
-                    return;
-                }
-
-
-                //Trim operation
-                Point3d lineStartPoint = insideLine.StartPoint;
-                Point3d lineEndPoint = insideLine.EndPoint;
-                Polyline polyl = ConvertToPolyline(outsideLine);
-
-                //Calculate trimming points 
-                Point3d inTrimStart = new Point3d(), inTrimEnd = new Point3d(), outTrimStart = new Point3d(), outTrimEnd = new Point3d();
-                switch (direction)
-                {
-                    case direction.right:
-                        inTrimStart = new Point3d(cornerPointInRev.X + Convert.ToDouble(startDistance), cornerPointInRev.Y, 0);
-                        inTrimEnd = new Point3d(inTrimStart.X + Convert.ToDouble(trimWidth), cornerPointInRev.Y, 0);
-                        outTrimStart = new Point3d(inTrimStart.X, cornerPointOutRev.Y, 0);
-                        outTrimEnd = new Point3d(inTrimEnd.X, cornerPointOutRev.Y, 0);
-                        break;
-                    case direction.left:
-                        inTrimStart = new Point3d(cornerPointInRev.X - Convert.ToDouble(startDistance), cornerPointInRev.Y, 0);
-                        inTrimEnd = new Point3d(inTrimStart.X - Convert.ToDouble(trimWidth), cornerPointInRev.Y, 0);
-                        outTrimStart = new Point3d(inTrimStart.X, cornerPointOutRev.Y, 0);
-                        outTrimEnd = new Point3d(inTrimEnd.X, cornerPointOutRev.Y, 0);
-                        break;
-                    case direction.top:
-                        inTrimStart = new Point3d(cornerPointInRev.X, cornerPointInRev.Y + Convert.ToDouble(startDistance), 0);
-                        inTrimEnd = new Point3d(cornerPointInRev.X, inTrimStart.Y + Convert.ToDouble(trimWidth), 0);
-                        outTrimStart = new Point3d(cornerPointOutRev.X, inTrimStart.Y, 0);
-                        outTrimEnd = new Point3d(cornerPointOutRev.X, inTrimEnd.Y, 0);
-                        break;
-                    case direction.bottom:
-                        inTrimStart = new Point3d(cornerPointInRev.X, cornerPointInRev.Y - Convert.ToDouble(startDistance), 0);
-                        inTrimEnd = new Point3d(cornerPointInRev.X, inTrimStart.Y - Convert.ToDouble(trimWidth), 0);
-                        outTrimStart = new Point3d(cornerPointOutRev.X, inTrimStart.Y, 0);
-                        outTrimEnd = new Point3d(cornerPointOutRev.X, inTrimEnd.Y, 0);
-                        break;
-                }
-
-
-                Line tempLine = new Line(lineStartPoint, inTrimStart);
-                if (IsPointOnPolyline(ConvertToPolyline(tempLine), inTrimEnd))
-                {
-                    Point3d tempPoint = lineStartPoint;
-                    lineStartPoint = lineEndPoint;
-                    lineEndPoint = tempPoint;
-                }
-
-
-                Line line1 = new Line(lineStartPoint, inTrimStart);
-                Line line2 = new Line(inTrimEnd, lineEndPoint);
-
-                line1.SetDatabaseDefaults();
-                line2.SetDatabaseDefaults();
-                polyl.SetDatabaseDefaults();
-
-                acBlkTblRec.AppendEntity(line1);
-                acBlkTblRec.AppendEntity(line2);
-                acBlkTblRec.AppendEntity(polyl);
-
-                tr.AddNewlyCreatedDBObject(line1, true);
-                tr.AddNewlyCreatedDBObject(line2, true);
-                tr.AddNewlyCreatedDBObject(polyl, true);
-
-                //Upperline trim
-
-                lineStartPoint = outsideLine.StartPoint;
-                lineEndPoint = outsideLine.EndPoint;
-                Polyline polyl2 = ConvertToPolyline(outsideLine);
-                //Need to check trimStartPoint and trimEndPoint lies into the line or not
-                if (!(IsPointOnPolyline(polyl2, outTrimStart) && IsPointOnPolyline(polyl2, outTrimEnd)))
-                {
-                    ed.WriteMessage("\nTrim startpoint and endpoint are not on the line to trim");
-                    return;
-                }
-
-                tempLine = new Line(lineStartPoint, outTrimStart);
-                if (IsPointOnPolyline(ConvertToPolyline(tempLine), outTrimEnd))
-                {
-                    Point3d tempPoint = lineStartPoint;
-                    lineStartPoint = lineEndPoint;
-                    lineEndPoint = tempPoint;
-                }
-
-
-                Line line3 = new Line(lineStartPoint, outTrimStart);
-                Line line4 = new Line(outTrimEnd, lineEndPoint);
-
-                line3.SetDatabaseDefaults();
-                line4.SetDatabaseDefaults();
-                polyl.SetDatabaseDefaults();
-                polyl2.SetDatabaseDefaults();
-
-                acBlkTblRec.AppendEntity(line3);
-                acBlkTblRec.AppendEntity(line4);
-                acBlkTblRec.AppendEntity(polyl2);
-
-                tr.AddNewlyCreatedDBObject(line3, true);
-                tr.AddNewlyCreatedDBObject(line4, true);
-                tr.AddNewlyCreatedDBObject(polyl2, true);
-
-                //Delete the base line to complete trimming operation
-                polyl.Erase();
-                polyl2.Erase();
-                outsideLine.Erase();
-                insideLine.Erase();
-
-                //Add two more line connecting four trimming points
-                Line startTrimConnection = new Line(inTrimStart, outTrimStart);
-                Line endTrimConnection = new Line(inTrimEnd, outTrimEnd);
-                startTrimConnection.SetDatabaseDefaults();
-                endTrimConnection.SetDatabaseDefaults();
-                acBlkTblRec.AppendEntity(startTrimConnection);
-                acBlkTblRec.AppendEntity(endTrimConnection);
-                tr.AddNewlyCreatedDBObject(startTrimConnection, true);
-                tr.AddNewlyCreatedDBObject(endTrimConnection, true);
-
-
-                ed.Regen();
-                tr.Commit();
-                ed.Regen();
-
+            }catch
+            {
+                ed.WriteMessage("Invalid Operation. Try Again");
             }
-
             //Point3d insertionPoint = GetPoint("Select window block insertion point");
 
             //Point3d modifiedPos = new Point3d(insertionPoint.X + 905, insertionPoint.Y - 544, 0);
@@ -424,70 +429,75 @@ namespace OhdDoorFinal
         /// <param name="blockName"></param>
         public void InsertGenDoorBlock(Point3d insPt, string blockName, double width = 0)
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-
-            using (Database OpenDb = new Database(false, true))
-
+            try
             {
-                OpenDb.ReadDwgFile(@"C:\Temp\OHD Blocks\AllBlocks.dwg",
+                Document doc = Application.DocumentManager.MdiActiveDocument;
 
-                    System.IO.FileShare.ReadWrite, true, "");
-
-                ObjectIdCollection ids = new ObjectIdCollection();
-
-                using (Transaction tr =
-
-                        OpenDb.TransactionManager.StartTransaction())
+                using (Database OpenDb = new Database(false, true))
 
                 {
+                    OpenDb.ReadDwgFile(@"C:\Temp\OHD Blocks\AllBlocks.dwg",
 
-                    //For example, Get the block by name "TEST"
+                        System.IO.FileShare.ReadWrite, true, "");
 
-                    BlockTable bt;
+                    ObjectIdCollection ids = new ObjectIdCollection();
 
-                    bt = (BlockTable)tr.GetObject(OpenDb.BlockTableId
+                    using (Transaction tr =
 
-                                                   , OpenMode.ForRead);
-
-
-
-                    if (bt.Has(blockName))
+                            OpenDb.TransactionManager.StartTransaction())
 
                     {
 
-                        ids.Add(bt[blockName]);
+                        //For example, Get the block by name "TEST"
+
+                        BlockTable bt;
+
+                        bt = (BlockTable)tr.GetObject(OpenDb.BlockTableId
+
+                                                       , OpenMode.ForRead);
+
+
+
+                        if (bt.Has(blockName))
+
+                        {
+
+                            ids.Add(bt[blockName]);
+
+                        }
+
+                        tr.Commit();
 
                     }
 
-                    tr.Commit();
 
+
+                    //if found, add the block
+
+                    if (ids.Count != 0)
+
+                    {
+
+                        //get the current drawing database
+
+                        Database destdb = doc.Database;
+
+
+
+                        IdMapping iMap = new IdMapping();
+
+                        destdb.WblockCloneObjects(ids, destdb.BlockTableId
+
+                               , iMap, DuplicateRecordCloning.Ignore, false);
+
+                    }
+
+                    InsertBlockToPoint(insPt, blockName, "Distance1", width);
                 }
-
-
-
-                //if found, add the block
-
-                if (ids.Count != 0)
-
-                {
-
-                    //get the current drawing database
-
-                    Database destdb = doc.Database;
-
-
-
-                    IdMapping iMap = new IdMapping();
-
-                    destdb.WblockCloneObjects(ids, destdb.BlockTableId
-
-                           , iMap, DuplicateRecordCloning.Ignore, false);
-
-                }
-
-                InsertBlockToPoint(insPt, blockName, "Distance1",width);
+            }catch(System.Exception e)
+            {
+                ed.WriteMessage(e.ToString());
             }
-
 
         }
 
